@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robótica &amp; Física e Tecnociência — Turma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDECE3;
+    --ink:#16202B;
+    --muted:#5B6472;
+    --blueprint:#1B3A5C;
+    --blueprint-deep:#12293F;
+    --grid-line:rgba(255,255,255,0.10);
+    --hair:#D8D4C6;
+    --robo:#2FBFAE;
+    --robo-deep:#1E8C7F;
+    --fis:#E08E45;
+    --fis-deep:#B96B2A;
+    --radius:2px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    letter-spacing:-0.01em;
+  }
+
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.02em;
+  }
+
+  a{color:inherit;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px;
+    background:rgba(237,236,227,0.88);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--hair);
+  }
+  .brand{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .brand .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--robo);
+    box-shadow:6px 0 0 var(--fis);
+  }
+  .navlinks{display:flex; gap:4px;}
+  .navlinks button{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    background:none; border:none; cursor:pointer;
+    padding:8px 14px;
+    color:var(--muted);
+    border-radius:var(--radius);
+    transition:color .15s ease, background .15s ease;
+  }
+  .navlinks button:hover{color:var(--ink); background:rgba(0,0,0,0.05);}
+  .navlinks button.active{color:var(--ink); background:rgba(0,0,0,0.06); font-weight:500;}
+  .navlinks button.active[data-section="robotica"]{color:var(--robo-deep); background:rgba(47,191,174,0.14);}
+  .navlinks button.active[data-section="fisica"]{color:var(--fis-deep); background:rgba(224,142,69,0.16);}
+
+  /* ---------- SECTIONS ---------- */
+  section{display:none;}
+  section.active{display:block;}
+
+  /* ---------- HERO (INÍCIO) ---------- */
+  .hero{
+    position:relative;
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(135deg, var(--blueprint), var(--blueprint-deep));
+    background-size:36px 36px, 36px 36px, 100% 100%;
+    color:#EDF2F6;
+    padding:96px 32px 120px;
+    overflow:hidden;
+  }
+  .hero-inner{max-width:880px; margin:0 auto; position:relative; z-index:2;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:#9FD6CE;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:24px; height:1px; background:#9FD6CE;}
+  .hero h1{
+    font-size:clamp(32px, 5vw, 52px);
+    font-weight:700;
+    line-height:1.08;
+    max-width:11em;
+  }
+  .hero h1 .accent-r{color:var(--robo);}
+  .hero h1 .accent-f{color:var(--fis);}
+  .hero p{
+    margin-top:22px;
+    max-width:46em;
+    font-size:16.5px;
+    color:#C7D3DC;
+  }
+
+  .trace-svg{position:absolute; right:-40px; top:0; bottom:0; width:52%; z-index:1; opacity:0.9;}
+
+  .hero-cards{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    max-width:720px;
+  }
+  .subject-card{
+    text-align:left;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.16);
+    background:rgba(255,255,255,0.04);
+    padding:22px 20px;
+    border-radius:var(--radius);
+    transition:transform .18s ease, background .18s ease, border-color .18s ease;
+  }
+  .subject-card:hover{transform:translateY(-3px);}
+  .subject-card[data-goto="robotica"]:hover{border-color:var(--robo); background:rgba(47,191,174,0.10);}
+  .subject-card[data-goto="fisica"]:hover{border-color:var(--fis); background:rgba(224,142,69,0.10);}
+  .subject-card .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; text-transform:uppercase; letter-spacing:0.08em;
+  }
+  .subject-card[data-goto="robotica"] .tag{color:var(--robo);}
+  .subject-card[data-goto="fisica"] .tag{color:var(--fis);}
+  .subject-card h3{font-size:19px; margin-top:8px; color:#fff;}
+  .subject-card span.arrow{
+    display:inline-block; margin-top:14px; font-size:13px; color:#C7D3DC;
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  /* ---------- SUBJECT PAGE HEADER ---------- */
+  .page-head{
+    padding:64px 32px 40px;
+    border-bottom:1px solid var(--hair);
+    position:relative;
+  }
+  .page-head .ruler{
+    position:absolute; left:0; right:0; top:0; height:6px;
+  }
+  .page-head[data-theme="robo"] .ruler{background:repeating-linear-gradient(90deg, var(--robo) 0 2px, transparent 2px 14px);}
+  .page-head[data-theme="fis"] .ruler{background:repeating-linear-gradient(90deg, var(--fis) 0 2px, transparent 2px 14px);}
+  .page-head-inner{max-width:880px; margin:0 auto;}
+  .page-head .eyebrow2{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .page-head[data-theme="robo"] .eyebrow2{color:var(--robo-deep);}
+  .page-head[data-theme="fis"] .eyebrow2{color:var(--fis-deep);}
+  .page-head h2{font-size:clamp(26px, 4vw, 38px); font-weight:700;}
+  .page-head p{margin-top:14px; color:var(--muted); max-width:56em; font-size:15.5px;}
+
+  /* ---------- GALLERY ---------- */
+  .gallery-wrap{padding:48px 32px 100px;}
+  .gallery-inner{max-width:1080px; margin:0 auto;}
+  .gallery-meta{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:22px; flex-wrap:wrap; gap:10px;
+  }
+  .gallery-meta h4{font-size:14px; font-weight:600; color:var(--ink); font-family:'Space Grotesk',sans-serif;}
+  .gallery-meta .count{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);}
+
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:18px;
+  }
+  .g-item{
+    position:relative;
+    aspect-ratio:4/3;
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:#fff;
+    border:1px solid var(--hair);
+  }
+  .g-item img, .g-item video{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .g-caption{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:8px 10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:#fff;
+    background:linear-gradient(transparent, rgba(0,0,0,0.65));
+  }
+
+  .g-placeholder{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px;
+    border:1.5px dashed var(--hair);
+    background:repeating-linear-gradient(45deg, rgba(0,0,0,0.015) 0 10px, transparent 10px 20px);
+    color:var(--muted);
+    text-align:center;
+    padding:14px;
+  }
+  .g-placeholder .plus{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:26px; line-height:1;
+    color:var(--muted);
+  }
+  .g-placeholder .ptxt{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    max-width:16em;
+  }
+  [data-theme="robo"] .g-placeholder:hover{border-color:var(--robo);}
+  [data-theme="fis"] .g-placeholder:hover{border-color:var(--fis);}
+
+  /* corner ticks — signature detail echoing the hero's blueprint grid */
+  .g-item::before, .g-item::after{
+    content:''; position:absolute; width:8px; height:8px; z-index:2;
+    border-top:1.5px solid; border-left:1.5px solid;
+    top:5px; left:5px; opacity:0.55;
+  }
+  [data-theme="robo"] .g-item::before{border-color:var(--robo);}
+  [data-theme="fis"] .g-item::before{border-color:var(--fis);}
+  .g-item::after{top:auto; left:auto; bottom:5px; right:5px; border-top:none; border-left:none; border-bottom:1.5px solid; border-right:1.5px solid;}
+  [data-theme="robo"] .g-item::after{border-color:var(--robo);}
+  [data-theme="fis"] .g-item::after{border-color:var(--fis);}
+
+  .howto{
+    margin-top:36px;
+    border:1px solid var(--hair);
+    background:#fff;
+    padding:18px 20px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+    border-radius:var(--radius);
+    line-height:1.7;
+  }
+  .howto b{color:var(--ink);}
+
+  footer{
+    padding:26px 32px;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--muted);
+    border-top:1px solid var(--hair);
+  }
+
+  @media (max-width:640px){
+    .hero-cards{grid-template-columns:1fr;}
+    .trace-svg{display:none;}
+    nav{padding:14px 18px;}
+    .hero{padding:64px 18px 80px;}
+    .page-head, .gallery-wrap{padding-left:18px; padding-right:18px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .subject-card{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><span class="dot"></span> Turma · Ciências</div>
+  <div class="navlinks">
+    <button class="active" data-section="inicio">Início</button>
+    <button data-section="robotica">Robótica</button>
+    <button data-section="fisica">Física &amp; Tecnociência</button>
+  </div>
+</nav>
+
+<!-- ===================== INÍCIO ===================== -->
+<section id="inicio" class="active">
+  <div class="hero">
+    <svg class="trace-svg" viewBox="0 0 400 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 0 60 L 180 60 L 180 220 L 60 220 L 60 500" stroke="#2FBFAE" stroke-width="1.5" fill="none" opacity="0.55"/>
+      <path d="M 0 130 L 140 130 L 140 340 L 320 340 L 320 500" stroke="#E08E45" stroke-width="1.5" fill="none" opacity="0.55"/>
+      <circle cx="180" cy="60" r="4" fill="#2FBFAE"/>
+      <circle cx="60" cy="220" r="4" fill="#2FBFAE"/>
+      <circle cx="140" cy="130" r="4" fill="#E08E45"/>
+      <circle cx="320" cy="340" r="4" fill="#E08E45"/>
+    </svg>
+    <div class="hero-inner">
+      <div class="eyebrow">registro de laboratório — turma 2026</div>
+      <h1>O que a gente constrói e descobre em <span class="accent-r">Robótica</span> e <span class="accent-f">Física e Tecnociência</span></h1>
+      <p>Este é o mural digital da turma: aqui a gente guarda os vídeos e fotos dos projetos, experimentos e protótipos feitos em sala de aula. Escolha uma matéria abaixo para ver (ou adicionar) os registros.</p>
+
+      <div class="hero-cards">
+        <div class="subject-card" data-goto="robotica">
+          <div class="tag">01 · Oficina</div>
+          <h3>Robótica</h3>
+          <span class="arrow">ver galeria →</span>
+        </div>
+        <div class="subject-card" data-goto="fisica">
+          <div class="tag">02 · Laboratório</div>
+          <h3>Física e Tecnociência</h3>
+          <span class="arrow">ver galeria →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROBÓTICA ===================== -->
+<section id="robotica">
+  <div class="page-head" data-theme="robo">
+    <div class="ruler"></div>
+    <div class="page-head-inner">
+      <div class="eyebrow2">matéria 01</div>
+      <h2>Robótica</h2>
+      <p>Fotos e vídeos dos robôs, circuitos e protótipos montados em sala. Cada projeto entra aqui com uma legenda curta.</p>
+    </div>
+  </div>
+  <div class="gallery-wrap" data-theme="robo">
+    <div class="gallery-inner">
+      <div class="gallery-meta">
+        <h4 class="mono">GALERIA — ROBÓTICA</h4>
+        <span class="count" id="count-robotica"></span>
+      </div>
+      <div class="gallery-grid" id="grid-robotica"></div>
+      <div class="howto">
+        <b>Como adicionar fotos/vídeos aqui:</b> abra o arquivo <b>index.html</b>, procure a lista <b>MEDIA.robotica</b> no final do arquivo e adicione um item como <b>{ type: 'image', src: 'assets/robotica/nome-do-arquivo.jpg', caption: 'legenda curta' }</b>. Coloque o arquivo de foto/vídeo dentro de uma pasta chamada <b>assets/robotica/</b>, ao lado deste HTML.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FÍSICA E TECNOCIÊNCIA ===================== -->
+<section id="fisica">
+  <div class="page-head" data-theme="fis">
+    <div class="ruler"></div>
+    <div class="page-head-inner">
+      <div class="eyebrow2">matéria 02</div>
+      <h2>Física e Tecnociência</h2>
+      <p>Registros dos experimentos, medições e demonstrações da matéria. Cada experimento entra aqui com uma legenda curta.</p>
+    </div>
+  </div>
+  <div class="gallery-wrap" data-theme="fis">
+    <div class="gallery-inner">
+      <div class="gallery-meta">
+        <h4 class="mono">GALERIA — FÍSICA E TECNOCIÊNCIA</h4>
+        <span class="count" id="count-fisica"></span>
+      </div>
+      <div class="gallery-grid" id="grid-fisica"></div>
+      <div class="howto">
+        <b>Como adicionar fotos/vídeos aqui:</b> abra o arquivo <b>index.html</b>, procure a lista <b>MEDIA.fisica</b> no final do arquivo e adicione um item como <b>{ type: 'video', src: 'assets/fisica/nome-do-arquivo.mp4', caption: 'legenda curta' }</b>. Coloque o arquivo de foto/vídeo dentro de uma pasta chamada <b>assets/fisica/</b>, ao lado deste HTML.
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>feito pela turma · atualize este site sempre que houver um novo projeto</footer>
+
+<script>
+/* =========================================================================
+   PARA ADICIONAR FOTOS E VÍDEOS:
+   1. Crie as pastas "assets/robotica" e "assets/fisica" ao lado deste arquivo.
+   2. Coloque os arquivos de foto/vídeo dentro delas.
+   3. Adicione um item em MEDIA.robotica ou MEDIA.fisica abaixo, por exemplo:
+        { type: 'image', src: 'assets/robotica/robo-linha.jpg', caption: 'Robô seguidor de linha' }
+        { type: 'video', src: 'assets/fisica/pendulo.mp4',      caption: 'Experimento do pêndulo' }
+   type pode ser 'image' ou 'video'. Salve o arquivo e recarregue a página.
+   ========================================================================= */
+const MEDIA = {
+  robotica: [
+    // adicione seus itens aqui
+  ],
+  fisica: [
+    // adicione seus itens aqui
+  ]
+};
+
+const MIN_SLOTS = 6; // número mínimo de espaços mostrados na galeria
+
+function renderGallery(key){
+  const grid = document.getElementById('grid-' + key);
+  const count = document.getElementById('count-' + key);
+  const items = MEDIA[key];
+  grid.innerHTML = '';
+
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'g-item';
+    const media = item.type === 'video'
+      ? `<video src="${item.src}" controls muted></video>`
+      : `<img src="${item.src}" alt="${item.caption || ''}" loading="lazy">`;
+    div.innerHTML = media + (item.caption ? `<div class="g-caption">${item.caption}</div>` : '');
+    grid.appendChild(div);
+  });
+
+  const emptySlots = Math.max(MIN_SLOTS - items.length, items.length === 0 ? MIN_SLOTS : 1);
+  for(let i=0; i<emptySlots; i++){
+    const ph = document.createElement('div');
+    ph.className = 'g-item g-placeholder';
+    ph.innerHTML = `<span class="plus">+</span><span class="ptxt">adicione uma foto ou vídeo do projeto aqui</span>`;
+    grid.appendChild(ph);
+  }
+
+  count.textContent = items.length + (items.length === 1 ? ' item' : ' itens');
+}
+
+renderGallery('robotica');
+renderGallery('fisica');
+
+/* navegação entre as 3 seções */
+function goTo(id){
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.navlinks button').forEach(b => b.classList.toggle('active', b.dataset.section === id));
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+document.querySelectorAll('.navlinks button').forEach(btn => {
+  btn.addEventListener('click', () => goTo(btn.dataset.section));
+});
+document.querySelectorAll('[data-goto]').forEach(card => {
+  card.addEventListener('click', () => goTo(card.dataset.goto));
+});
+</script>
+
+</body>
+</html>
